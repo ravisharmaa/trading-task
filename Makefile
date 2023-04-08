@@ -22,3 +22,6 @@ cli-backend: ## Enter our backend environment shell
 
 lint:
 	$(DOCKER_COMPOSE) run --rm app sh ./vendor/bin/pint
+
+autoload:
+	$(DOCKER_COMPOSE) run --rm composer dump-autoload -o
