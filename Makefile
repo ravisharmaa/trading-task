@@ -25,3 +25,6 @@ lint:
 
 autoload:
 	$(DOCKER_COMPOSE) run --rm composer dump-autoload -o
+
+npm:
+	$(DOCKER_COMPOSE) run --rm npm run dev

@@ -21,7 +21,7 @@ COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr
 # Install required PHP extensions and all their prerequisites available via apt.
 RUN chmod uga+x /usr/bin/install-php-extensions \
     && sync \
-    && install-php-extensions
+    && install-php-extensions pdo_mysql mysqli
 
 RUN mkdir -p /var/www
 ADD ../.. .

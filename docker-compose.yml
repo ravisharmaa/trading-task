@@ -69,8 +69,8 @@ services:
       environment:
           MYSQL_DATABASE: ${DB_DATABASE}
           MYSQL_USER: ${DB_USERNAME}
-          MYSQL_ROOT_PASSWORD: secret
           MYSQL_PASSWORD: ${DB_PASSWORD}
+          MYSQL_ROOT_PASSWORD: secret
       volumes:
           - db:/var/lib/mysql
       env_file:
