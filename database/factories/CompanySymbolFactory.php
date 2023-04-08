@@ -10,6 +10,7 @@ class CompanySymbolFactory extends Factory
     {
         return [
             'name' => fake()->name,
+            'financial_status' => fake()->text,
             'market_category' => fake()->text,
             'round_lot_size' => fake()->randomDigitNotNull,
             'security_name' => fake()->text,

@@ -11,14 +11,14 @@ class ViewHistoricalQuoteTest extends TestCase
 
     public function test_it_should_validate_form_to_view_historical_quotes()
     {
-        $this->postJson(route('historical.quote.store'))
+        $this->postJson(route('historical.quote.show'))
             ->assertJsonValidationErrors(['email', 'start_date', 'end_date', 'company_symbol'])
             ->assertUnprocessable();
     }
 
     public function test_it_requires_a_valid_email_address()
     {
-        $this->postJson(route('historical.quote.store'),
+        $this->postJson(route('historical.quote.show'),
             [
                 'email' => fake()->text,
                 'start_date' => fake()->date(),
@@ -31,7 +31,7 @@ class ViewHistoricalQuoteTest extends TestCase
 
     public function test_it_requires_the_start_date_and_end_date_to_be_a_valid_date()
     {
-        $this->postJson(route('historical.quote.store'),
+        $this->postJson(route('historical.quote.show'),
             [
                 'email' => fake()->email,
                 'start_date' => fake()->date('m-d-m-Y-H-i-s'),
@@ -42,9 +42,9 @@ class ViewHistoricalQuoteTest extends TestCase
             ->assertUnprocessable();
     }
 
-    public function test_that_start_date_must_be_less_than_end_date_and_less_than_current_date()
+    public function test_start_date_must_be_less_than_end_date_and_less_than_current_date()
     {
-        $this->postJson(route('historical.quote.store'),
+        $this->postJson(route('historical.quote.show'),
             [
                 'email' => fake()->email,
                 'start_date' => now()->addDay()->format('Y-m-d'),
@@ -53,5 +53,16 @@ class ViewHistoricalQuoteTest extends TestCase
             ])
             ->assertJsonValidationErrors(['start_date', 'end_date'])
             ->assertUnprocessable();
+    }
+    public function test_it_responds_with_the_historical_data_for_a_company_symbol()
+    {
+        $this->postJson(route('historical.quote.show'),
+            [
+                'email' => fake()->email,
+                'start_date' => '2023-03-15',
+                'end_date' => '2023-04-08',
+                'company_symbol' => fake()->text,
+            ])
+            ->assertOk();
     }
 }

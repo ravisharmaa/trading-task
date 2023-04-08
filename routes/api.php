@@ -3,6 +3,5 @@
 use App\Http\Controllers\Api\HistoricalQuoteController;
 use Illuminate\Support\Facades\Route;
 
-Route::name('historical')
-    ->apiResource('historical/quote', HistoricalQuoteController::class)
-    ->only(['index', 'store']);
+Route::post('historical/quote', [ HistoricalQuoteController::class, 'show'])
+    ->name('historical.quote.show');
