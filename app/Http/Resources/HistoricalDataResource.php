@@ -11,7 +11,7 @@ class HistoricalDataResource extends JsonResource
 {
     public function toArray(Request $request)
     {
-        return collect($this->resource['prices'])->filter(
+        return collect($this->resource)->filter(
             function ($looped) use ($request) {
                 $startDate = Carbon::createFromFormat('Y-m-d', $request->get('start_date'))->timestamp;
                 $endDate = Carbon::createFromFormat('Y-m-d', $request->get('end_date'))->timestamp;

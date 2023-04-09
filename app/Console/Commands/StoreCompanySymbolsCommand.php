@@ -24,7 +24,7 @@ class StoreCompanySymbolsCommand extends Command
         try {
             $data = $service->getData(
                 ClientType::COMPANY_SYMBOL,
-                env('COMPANY_SYMBOLS_PATH_COMPONENT')
+                config('app.company_symbols_path_component')
             );
         } catch (InvalidHttpRequest) {
             $this->warn('Could not fetch data. Quitting now.');

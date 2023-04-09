@@ -24,18 +24,13 @@ class HistoricalQuoteController extends Controller
         } catch (InvalidHttpRequest) {
             return new HistoricalDataResource([]);
         }
-        dispatch(
-            new SendStatistics(
-                new MailMessageValueObject(
-                    CompanySymbol::whereSymbol($request->get('company_symbol'))->first()->name,
-                    $request->get('start_date'),
-                    $request->get('end_date'),
-                    $request->get('email'),
-                    $data['prices']
-                )
-            )
-        );
+        SendStatistics::dispatchIf(!empty($data['prices']), new MailMessageValueObject(
+            CompanySymbol::whereSymbol($request->get('company_symbol'))->first()->name,
+            $request->get('start_date'),
+            $request->get('end_date'),
+            $request->get('email'),
+        ));
 
-        return new HistoricalDataResource($data);
+        return new HistoricalDataResource($data['prices'] ?? []);
     }
 }

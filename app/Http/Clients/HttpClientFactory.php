@@ -17,7 +17,7 @@ readonly class HttpClientFactory
 
     private function makeCompanyClient(): PendingRequest
     {
-        return Http::baseUrl(env('COMPANY_SYMBOLS_BASE_URL'));
+        return Http::baseUrl(config('app.company_symbols_base_url'));
     }
 
     private function makeFinancialClient(): PendingRequest
@@ -25,8 +25,8 @@ readonly class HttpClientFactory
         return Http::baseUrl(env('FINANCE_RAPID_API'))
                 ->withHeaders(
                     [
-                    'X-RapidAPI-Key' => env('FINANCE_RAPID_API_KEY'),
-                    'X-RapidAPI-HOST' => env('FINANCE_RAPID_API_HOST'),
+                    'X-RapidAPI-Key' => config('app.finance_api_key'),
+                    'X-RapidAPI-HOST' => config('app.finance_api_host'),
                     ]
                 );
     }

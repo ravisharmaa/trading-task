@@ -15,15 +15,8 @@ use Illuminate\Support\Facades\Mail;
 class SendStatistics implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-
-    /**
-     * Create a new job instance.
-     */
-    public function __construct(
-        private readonly MailMessageValueObject $mailMessageValueObject
-    )
+    public function __construct(private readonly MailMessageValueObject $messageValueObject)
     {
-        //
     }
 
     /**
@@ -31,6 +24,6 @@ class SendStatistics implements ShouldQueue
      */
     public function handle(): void
     {
-        Mail::to($this->mailMessageValueObject->getTo())->send(new SendStatisticsEmail($this->mailMessageValueObject));
+        Mail::to($this->messageValueObject->getTo())->send(new SendStatisticsEmail($this->messageValueObject));
     }
 }

@@ -9,11 +9,9 @@ import {formatDate} from "../utils/utilities";
 import useVuelidate from "@vuelidate/core";
 import {required, email} from "@vuelidate/validators";
 import Loading from "vue-loading-overlay"
-import Notifications from "@kyvg/vue3-notification";
 import 'vue-loading-overlay/dist/css/index.css';
-import { useNotification } from "@kyvg/vue3-notification";
 const emit = defineEmits(['on-data-received']);
-const {notify} = useNotification();
+
 let formObject = ref({
     companyName: '',
     startDate: new Date(),
@@ -33,6 +31,7 @@ let symbolsSelectOptions = reactive([]);
 let apiRequest = new ApiRequest();
 let isSearchLoading = ref(false);
 let visible = ref(false);
+let showSimpleToast = ref(false);
 const sendApiRequest = debounce(async (newName) => {
     try {
         if (newName.length >= 2) {
@@ -52,6 +51,12 @@ const sendApiRequest = debounce(async (newName) => {
     }
 }, 1000)
 
+const showToast = () => {
+    showSimpleToast.value = true;
+    setTimeout(fn => {
+        showSimpleToast.value = false
+    }, 3000)
+}
 const submitForm = async () => {
     const result = await v$.value.$validate();
     if (result) {
@@ -67,10 +72,18 @@ const submitForm = async () => {
             let data = await apiRequest.getHistoricalData(formData)
             if (data.status === 200 && data.data.data.length > 0) {
                 emit('on-data-received', data.data);
+            } else {
+                formObject.value.email = '';
+                formObject.value.companyName = ''
+                v$.value.$reset()
+                visible.value = false;
+                showToast()
             }
-            visible.value = false;
+
         } catch (error) {
+            debugger;
             if (error.response.status === 422) {
+                visible.value = false;
                 formErrors.value = error.response?.data?.errors
             }
         }
@@ -81,7 +94,9 @@ const submitForm = async () => {
 <template>
     <div class="relative">
         <loading v-model:active="visible" :can-cancel="false" :height="40" :is-full-page="false"></loading>
-        <notifications position="bottom right" classes="my-custom-class" />
+        <button class="absolute top-0 right-0 mr-4 mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" v-if="showSimpleToast" type="button">
+           Oops!! No data available
+        </button>
         <div class="flex items-center justify-center h-screen bg-gray-300">
             <form class="bg-white shadow-md rounded px-20 pt-6 pb-8 mb-4 max-w-lg"  @submit.prevent="submitForm">
                 <div class="mb-4">

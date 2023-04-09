@@ -2,12 +2,18 @@
 
 namespace Tests\Feature;
 
+use App\Http\Clients\HttpClientService;
+use App\Jobs\SendStatistics;
+use App\Models\CompanySymbol;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Queue\Jobs\Job;
+use Illuminate\Support\Facades\Bus;
 use Tests\TestCase;
 
 class ViewHistoricalQuoteTest extends TestCase
 {
-    use WithFaker;
+    use WithFaker, RefreshDatabase;
 
     public function test_it_should_validate_form_to_view_historical_quotes()
     {
@@ -60,17 +66,72 @@ class ViewHistoricalQuoteTest extends TestCase
             ->assertJsonValidationErrors(['start_date', 'end_date'])
             ->assertUnprocessable();
     }
-    public function test_it_responds_with_the_historical_data_for_a_company_symbol()
+
+    public function test_requires_a_valid_company_symbol()
     {
+        $companySymbol = CompanySymbol::factory()->create();
+        $clientMock = $this->createMock(HttpClientService::class);
+        $this->swap(HttpClientService::class, $clientMock);
+        $clientMock->method('getData')->willReturn([]);
         $this->postJson(
             route('historical.quote.show'),
             [
                 'email' => fake()->email,
                 'start_date' => '2023-03-15',
                 'end_date' => '2023-04-08',
-                'company_symbol' => fake()->text,
+                'company_symbol' => $companySymbol->symbol,
             ]
         )
             ->assertOk();
+    }
+
+    public function test_it_does_not_dispatch_job_when_the_response_is_empty_from_finance_client()
+    {
+        Bus::fake();
+        $companySymbol = CompanySymbol::factory()->create();
+        $clientMock = $this->createMock(HttpClientService::class);
+        $this->swap(HttpClientService::class, $clientMock);
+        $clientMock->method('getData')->willReturn([]);
+        $this->postJson(
+            route('historical.quote.show'),
+            [
+                'email' => fake()->email,
+                'start_date' => '2023-03-15',
+                'end_date' => '2023-04-08',
+                'company_symbol' => $companySymbol->symbol,
+            ]
+        )
+            ->assertOk();
+        Bus::assertNotDispatched(SendStatistics::class);
+    }
+
+    public function test_it_dispatches_job_when_the_response_is_empty_from_finance_client()
+    {
+        Bus::fake();
+        $companySymbol = CompanySymbol::factory()->create();
+        $clientMock = $this->createMock(HttpClientService::class);
+        $this->swap(HttpClientService::class, $clientMock);
+        $clientMock->method('getData')->willReturn(
+           [
+               'prices' => [
+                   [
+                       'date' => 1123213,
+                        'open' => '1234',
+                        'high' => '23213',
+                        'low' => '1234'
+                   ]
+            ]
+        ]);
+        $this->postJson(
+            route('historical.quote.show'),
+            [
+                'email' => fake()->email,
+                'start_date' => '2023-03-15',
+                'end_date' => '2023-04-08',
+                'company_symbol' => $companySymbol->symbol,
+            ]
+        )
+            ->assertOk();
+        Bus::assertDispatched(SendStatistics::class);
     }
 }
