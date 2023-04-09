@@ -88,7 +88,9 @@ services:
       - .:/app
 
   queue:
-      image: trading-point-task_app
+      build:
+          context: ./docker/php
+          dockerfile: Dockerfile
       restart: unless-stopped
       container_name: email-task
       depends_on:

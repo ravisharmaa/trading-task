@@ -40,13 +40,6 @@ services:
       - ./:/var/www
       - ./docker/php/xdebug.ini:/usr/local/etc/php/conf.d/ext-xdebug.ini
 
-  npm:
-    image: node:current-alpine
-    volumes:
-      - ./:/var/www
-    entrypoint: ["npm"]
-    working_dir: /var/www
-
   mailer:
     image: maildev/maildev
     container_name: mailer
