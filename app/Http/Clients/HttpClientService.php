@@ -16,13 +16,13 @@ class HttpClientService
     public function getData(ClientType $clientType, string $url): ?array
     {
         $client = $this->clientFactory->makeClient($clientType);
-       try {
-           $response = $client->get($url);
-       } catch (\Exception $exception) {
-           $this->logger->info('Error while getting company symbols data.');
+        try {
+            $response = $client->get($url);
+        } catch (\Exception $exception) {
+            $this->logger->info('Error while getting company symbols data.');
 
-           return [];
-       }
+            return [];
+        }
 
         if (! $response->successful()) {
             throw new InvalidHttpRequest();

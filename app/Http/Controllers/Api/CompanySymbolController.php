@@ -12,10 +12,12 @@ class CompanySymbolController extends Controller
     public function index(): AnonymousResourceCollection
     {
         $companySymbol = CompanySymbol::query()
-            ->when(request()->filled('symbol'), function ($query) {
-                $wildCard = '%'.request('symbol').'%';
-                $query->where('symbol', 'like', $wildCard);
-            })
+            ->when(
+                request()->filled('symbol'), function ($query) {
+                    $wildCard = '%'.request('symbol').'%';
+                    $query->where('symbol', 'like', $wildCard);
+                }
+            )
             ->select('id', 'symbol')
             ->get();
 

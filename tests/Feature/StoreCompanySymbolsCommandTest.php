@@ -17,7 +17,8 @@ class StoreCompanySymbolsCommandTest extends TestCase
         $companySymbol = CompanySymbol::factory()->make();
         $clientMock = $this->createMock(HttpClientService::class);
         $this->swap(HttpClientService::class, $clientMock);
-        $clientMock->method('getData')->willReturn([
+        $clientMock->method('getData')->willReturn(
+            [
             [
                 'Company Name' => $companySymbol->name,
                 'Financial Status' => $companySymbol->financial_status,
@@ -26,7 +27,8 @@ class StoreCompanySymbolsCommandTest extends TestCase
                 'Security Name'  => $companySymbol->security_name,
                 'Test Issue'  => $companySymbol->test_issue
             ]
-        ]);
+            ]
+        );
         $this->artisan('app:store-company-symbols')->run();
         $this->assertDatabaseCount(CompanySymbol::class, 1);
     }

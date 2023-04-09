@@ -19,8 +19,7 @@ class StoreCompanySymbolsCommand extends Command
     public function handle(
         HttpClientService $service,
         CompanySymbolValueObject $valueObject
-    ): int
-    {
+    ): int {
         $this->warn('This command will remove all existing data from the table');
         try {
             $data = $service->getData(
@@ -38,10 +37,12 @@ class StoreCompanySymbolsCommand extends Command
         }
         DB::beginTransaction();
         CompanySymbol::query()->delete();
-        collect($data)->each(function($chunked) use ($valueObject) {
+        collect($data)->each(
+            function ($chunked) use ($valueObject) {
                 $valueObject->fromArray($chunked)->transformToCompanySymbol();
                 DB::commit();
-        });
+            }
+        );
         return true;
     }
 }

@@ -11,8 +11,7 @@ readonly class MailMessageValueObject
         private string $startDate,
         private string $endDate,
         private string $to
-    )
-    {
+    ) {
     }
 
     public function getCompany(): string

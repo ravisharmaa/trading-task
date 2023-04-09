@@ -18,51 +18,59 @@ class ViewHistoricalQuoteTest extends TestCase
 
     public function test_it_requires_a_valid_email_address()
     {
-        $this->postJson(route('historical.quote.show'),
+        $this->postJson(
+            route('historical.quote.show'),
             [
                 'email' => fake()->text,
                 'start_date' => fake()->date(),
                 'end_date' => now()->addDays(10)->format('Y-m-d'),
                 'company_symbol' => fake()->text,
-            ])
+            ]
+        )
             ->assertJsonValidationErrors(['email'])
             ->assertUnprocessable();
     }
 
     public function test_it_requires_the_start_date_and_end_date_to_be_a_valid_date()
     {
-        $this->postJson(route('historical.quote.show'),
+        $this->postJson(
+            route('historical.quote.show'),
             [
                 'email' => fake()->email,
                 'start_date' => fake()->date('m-d-m-Y-H-i-s'),
                 'end_date' => fake()->date('Y-md-m-Y-H-i-s'),
                 'company_symbol' => fake()->text,
-            ])
+            ]
+        )
             ->assertJsonValidationErrors(['start_date', 'end_date'])
             ->assertUnprocessable();
     }
 
     public function test_start_date_must_be_less_than_end_date_and_less_than_current_date()
     {
-        $this->postJson(route('historical.quote.show'),
+        $this->postJson(
+            route('historical.quote.show'),
             [
                 'email' => fake()->email,
                 'start_date' => now()->addDay()->format('Y-m-d'),
                 'end_date' => fake()->date(),
                 'company_symbol' => fake()->text,
-            ])
+            ]
+        )
             ->assertJsonValidationErrors(['start_date', 'end_date'])
             ->assertUnprocessable();
     }
     public function test_it_responds_with_the_historical_data_for_a_company_symbol()
     {
-        $this->postJson(route('historical.quote.show'),
+        $this->postJson(
+            route('historical.quote.show'),
             [
                 'email' => fake()->email,
                 'start_date' => '2023-03-15',
                 'end_date' => '2023-04-08',
                 'company_symbol' => fake()->text,
-            ])
+            ]
+        )
             ->assertOk();
     }
 }

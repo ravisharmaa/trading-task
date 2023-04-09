@@ -119,7 +119,8 @@ readonly class CompanySymbolValueObject
 
     public function transformToCompanySymbol(): void
     {
-        CompanySymbol::create([
+        CompanySymbol::create(
+            [
             'name' => $this->getCompanyName(),
             'financial_status' => $this->getFinancialStatus(),
             'market_category' => $this->getMarketCategory(),
@@ -127,6 +128,7 @@ readonly class CompanySymbolValueObject
             'test_issue' => $this->getTestIssue(),
             'security_name' => $this->getSecurityName(),
             'round_lot_size' => $this->getRoundLotSize(),
-        ]);
+            ]
+        );
     }
 }

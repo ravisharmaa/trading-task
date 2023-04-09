@@ -28,3 +28,9 @@ autoload:
 
 npm:
 	$(DOCKER_COMPOSE) run --rm npm run dev
+
+migrations:
+	$(DOCKER_COMPOSE) run --rm app php artisan migrate
+
+add-symbols:
+	$(DOCKER_COMPOSE) run --rm app php artisan app:store-company-symbols
