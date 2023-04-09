@@ -97,14 +97,19 @@ services:
           - ./:/var/www
       command: /var/www/artisan queue:work --sleep=3 --tries=3 --timeout=300
 
-
   npm:
-      image: node:current-alpine
+      build:
+          context: ./docker/node
+          dockerfile: node.dockerfile
+          args:
+              - UID=${UID:-1000}
+              - GID=${GID:-1000}
+      depends_on:
+          - app
       volumes:
-          - ./:/var/www
-      entrypoint: [ "npm" ]
-      working_dir: /var/www
-
+          - .:/app
+          - /app/node_modules/
+      command: npm run build
 
   mailer:
       image: maildev/maildev

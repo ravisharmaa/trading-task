@@ -8,11 +8,14 @@ help: ## This help dialog.
 
 DOCKER_COMPOSE := docker compose
 
+env:
+	cp .env.example .env
+
 build: ## (re)build the images and start the containers
 	$(DOCKER_COMPOSE) build --no-cache
 
 install: ## Install the containers in place
-	$(DOCKER_COMPOSE) up -d
+	 $(DOCKER_COMPOSE) up -d
 
 uninstall: ## Remove the containers
 	$(DOCKER_COMPOSE) down
@@ -26,8 +29,11 @@ lint:
 autoload:
 	$(DOCKER_COMPOSE) run --rm composer dump-autoload -o
 
-npm:
+npm-dev:
 	$(DOCKER_COMPOSE) run --rm npm run dev
+
+install-npm:
+	$(DOCKER_COMPOSE) run --rm npm install && npm run build
 
 migrations:
 	$(DOCKER_COMPOSE) run --rm app php artisan migrate
