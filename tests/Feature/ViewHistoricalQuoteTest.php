@@ -112,7 +112,7 @@ class ViewHistoricalQuoteTest extends TestCase
         $clientMock = $this->createMock(HttpClientService::class);
         $this->swap(HttpClientService::class, $clientMock);
         $clientMock->method('getData')->willReturn(
-           [
+            [
                'prices' => [
                    [
                        'date' => 1123213,
@@ -120,8 +120,9 @@ class ViewHistoricalQuoteTest extends TestCase
                         'high' => '23213',
                         'low' => '1234'
                    ]
+               ]
             ]
-        ]);
+        );
         $this->postJson(
             route('historical.quote.show'),
             [

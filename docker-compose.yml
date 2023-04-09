@@ -100,7 +100,3 @@ services:
 volumes:
   db:
     driver: local
-
-networks:
-  laravel:
-    name: laravel
