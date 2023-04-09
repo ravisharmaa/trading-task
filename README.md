@@ -1,66 +1,92 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Challenge By Trading
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Description
+This was challenge task from trading.com.
 
-## About Laravel
+## Dependencies
+The following dependencies are required to successfully run this project:
+- Docker
+- Make (Optional)
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Setup Instructions
+Assuming that docker & make is already available in the machine
+1. For make Run `make install`
+2. For docker run `docker compose up -d` or `docker-compose up -d`
+3. Additionally, a docker-compose.override.yml can also be used to smoothen the development environemnt
+```yaml
+version: '3.4'
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+services:
+  app:
+    build:
+      context: ./docker/php
+      dockerfile: Dockerfile
+      target: debug
+      args:
+        - UID=${UID:-1000}
+        - GID=${GID:-1000}
+    container_name: trading-point-app
+    restart: unless-stopped
+    tty: true
+    working_dir: /var/www/
+    depends_on:
+      - composer
+      - mysql
+      - mailer
+    environment:
+      - PHP_IDE_CONFIG=serverName=api.app.docker
+    volumes:
+      - ./:/var/www
+      - ./docker/php/xdebug.ini:/usr/local/etc/php/conf.d/ext-xdebug.ini
 
-## Learning Laravel
+  npm:
+    image: node:current-alpine
+    volumes:
+      - ./:/var/www
+    entrypoint: ["npm"]
+    working_dir: /var/www
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+  mailer:
+    image: maildev/maildev
+    container_name: mailer
+    command: maildev --smtp 25
+    ports:
+      - "1080:1080"
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+```
+The compose file adds a mail server as well and also enabled debug mode for php. As the base docker-compose file comes up with Traefik proxy installed which should serve the applcation in `http://trading.localhost` domain after running the up commands.
+## Libraries Used
+1. Vue 3
+2. Vite
+3. Tailwind CSS
+4. Vue MultiSelect
+5. Vue Validate
+6. Vue Datepicker
+7. Apex Charts
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Solution Formulation
+Steps I thought of when I was trying to work on this task.
+1. Creating a Laravel 10 + Vue 3 app to address the requirements..
+2. Adding proper docker-compose and docker file which address the easy browsing procedure.
+3. Installing Vite + Vue + Tailwind
+   - Installation of Frontend client Vue was acutally a cumbersome task but however I wanted to experiment with Vite and Vue3.
+4. Storing the company symbols
+    - As the company symbols were in a link which threw some json.I thought it would be nice to store them into the database which would help me afterwards while I search for the company symbol as there were a lot of them.
+    - Because the company symbols fetching was a one time work I added a laravel command which can be run whenever we need to update the symbols. 
+5. Showing the data in tabular form and Chart form
 
-## Laravel Sponsors
+## Decisions Tradeoffs & Constraints
+While working on the solution I made some conscious decisions which are:
+1. Storing the company symbols:
+   - Storing company symbols in database might be questionable but I wanted to reduce the number of http requests.
+   - Searching on the json file is also not a problem but to do a wild card search while searching for symbols would help in giving the results faster.
+2. Queue Driver as Database
+    - I consciously chose database as the queue connection but at places it can be a good choice to use other mechanisms.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+## Further Improvements
+As developers, we need to find some balance but if I were to improve this I would have worked on these steps:
+- Implement caching on the company symbols response.
+- Implement proper queue mechanism( SQS, BEANKSTALKD).
+- Implement a better chart and improve the overall UI.
 
-### Premium Partners
-
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
