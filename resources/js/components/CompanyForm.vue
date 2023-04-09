@@ -8,9 +8,12 @@ import '@vuepic/vue-datepicker/dist/main.css';
 import {formatDate} from "../utils/utilities";
 import useVuelidate from "@vuelidate/core";
 import {required, email} from "@vuelidate/validators";
-
+import Loading from "vue-loading-overlay"
+import Notifications from "@kyvg/vue3-notification";
+import 'vue-loading-overlay/dist/css/index.css';
+import { useNotification } from "@kyvg/vue3-notification";
 const emit = defineEmits(['on-data-received']);
-// properties
+const {notify} = useNotification();
 let formObject = ref({
     companyName: '',
     startDate: new Date(),

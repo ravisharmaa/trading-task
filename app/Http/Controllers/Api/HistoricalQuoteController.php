@@ -10,6 +10,7 @@ use App\Http\Requests\HistoricalQuoteRequest;
 use App\Http\Resources\HistoricalDataResource;
 use App\Http\ValueObjects\MailMessageValueObject;
 use App\Jobs\SendStatistics;
+use App\Models\CompanySymbol;
 
 class HistoricalQuoteController extends Controller
 {
@@ -25,9 +26,11 @@ class HistoricalQuoteController extends Controller
         }
         dispatch(new SendStatistics(
             new MailMessageValueObject(
-                $request->get('company_symbol'),
+                CompanySymbol::whereSymbol($request->get('company_symbol'))->first()->name,
                 $request->get('start_date'),
-                $request->get('end_date')
+                $request->get('end_date'),
+                $request->get('email'),
+                $data['prices']
             )
         ));
 
