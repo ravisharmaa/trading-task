@@ -97,6 +97,21 @@ services:
           - ./:/var/www
       command: /var/www/artisan queue:work --sleep=3 --tries=3 --timeout=300
 
+
+  npm:
+      image: node:current-alpine
+      volumes:
+          - ./:/var/www
+      entrypoint: [ "npm" ]
+      working_dir: /var/www
+
+
+  mailer:
+      image: maildev/maildev
+      container_name: mailer
+      command: maildev --smtp 25
+      ports:
+          - "1080:1080"
 volumes:
   db:
     driver: local
