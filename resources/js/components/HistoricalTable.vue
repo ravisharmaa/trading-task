@@ -11,7 +11,7 @@ let viewInCharts = ref(false);
 </script>
 <template>
     <div>
-        <div class="h-screen bg-gray-300 p10">
+        <div class="h-screen p10">
             <div class="relative overflow-x-auto border rounded-lg border-gray-300 p-10">
                 <div class="flex justify-end space-x-4 mb-4">
                     <button class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded focus:outline-none"
@@ -52,7 +52,7 @@ let viewInCharts = ref(false);
                             v-for="data in historicalData">
                             <th scope="row"
                                 class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                {{ data.date }}
+                                {{ new Date(data.date * 1000) }}
                             </th>
                             <td class="px-6 py-4">
                                 {{ data.open }}
