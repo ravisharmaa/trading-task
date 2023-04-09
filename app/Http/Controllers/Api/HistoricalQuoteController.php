@@ -2,28 +2,35 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Exceptions\InvalidHttpRequest;
 use App\Http\Clients\ClientType;
 use App\Http\Clients\HttpClientService;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\HistoricalQuoteRequest;
-use Carbon\Carbon;
+use App\Http\Resources\HistoricalDataResource;
+use App\Http\ValueObjects\MailMessageValueObject;
+use App\Jobs\SendStatistics;
 
 class HistoricalQuoteController extends Controller
 {
     public function show(
         HistoricalQuoteRequest $request,
         HttpClientService $clientService
-    ) {
-        $fianceApiUrl = sprintf(env('FINANCE_API_PATH_COMPONENT'), 'AMRN');
-        $data = $clientService->getData(ClientType::HISTORICAL_DATA, $fianceApiUrl);
+    ): HistoricalDataResource {
+        $fianceApiUrl = sprintf(env('FINANCE_API_PATH_COMPONENT'), $request->get('company_symbol'));
+        try {
+            $data = $clientService->getData(ClientType::HISTORICAL_DATA, $fianceApiUrl);
+        } catch (InvalidHttpRequest) {
+            return new HistoricalDataResource([]);
+        }
+        dispatch(new SendStatistics(
+            new MailMessageValueObject(
+                $request->get('company_symbol'),
+                $request->get('start_date'),
+                $request->get('end_date')
+            )
+        ));
 
-        return collect($data['prices'])
-            ->filter(function ($looped) use ($request) {
-                $startDate = $request->getCarbonInstance($request->get('start_date'))->timestamp;
-                $endDate = $request->getCarbonInstance($request->get('end_date'))->timestamp;
-                $parsed = Carbon::createFromTimestamp($looped['date'])->timestamp;
-
-                return $parsed >= $startDate && $parsed <= $endDate;
-            });
+        return new HistoricalDataResource($data);
     }
 }

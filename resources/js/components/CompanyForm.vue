@@ -29,6 +29,7 @@ let formErrors = ref([]);
 let symbolsSelectOptions = reactive([]);
 let apiRequest = new ApiRequest();
 let isSearchLoading = ref(false);
+let visible = ref(false);
 const sendApiRequest = debounce(async (newName) => {
     try {
         if (newName.length >= 2) {
@@ -59,10 +60,12 @@ const submitForm = async () => {
             'email': value.email
         }
         try {
+            visible.value = true;
             let data = await apiRequest.getHistoricalData(formData)
-            if (data.status === 200 && data.data.length > 0) {
-                emit('on-data-received', data);
+            if (data.status === 200 && data.data.data.length > 0) {
+                emit('on-data-received', data.data);
             }
+            visible.value = false;
         } catch (error) {
             if (error.response.status === 422) {
                 formErrors.value = error.response?.data?.errors
@@ -73,7 +76,9 @@ const submitForm = async () => {
 </script>
 <style src="vue-multiselect/dist/vue3-multiselect.css"></style>
 <template>
-    <div>
+    <div class="relative">
+        <loading v-model:active="visible" :can-cancel="false" :height="40" :is-full-page="false"></loading>
+        <notifications position="bottom right" classes="my-custom-class" />
         <div class="flex items-center justify-center h-screen bg-gray-300">
             <form class="bg-white shadow-md rounded px-20 pt-6 pb-8 mb-4 max-w-lg"  @submit.prevent="submitForm">
                 <div class="mb-4">
@@ -113,6 +118,9 @@ const submitForm = async () => {
                     <div class="mt-1 text-red-500 text-sm" v-for="error in v$.startDate.$errors">
                         {{error.$message}}
                     </div>
+                    <div class="mt-1 text-red-500 text-sm" v-if="formErrors?.start_date">
+                        {{formErrors?.start_date[0]}}
+                    </div>
                 </div>
                 <div class="mb-4">
                     <label class="block text-gray-700 text-sm font-bold mb-2" for="end_date">
@@ -121,6 +129,9 @@ const submitForm = async () => {
                     <VueDatePicker v-model="formObject.endDate" :enable-time-picker="false" :format="formatDate" :clearable="false" auto-apply no-swipe />
                     <div class="mt-1 text-red-500 text-sm" v-for="error in v$.endDate.$errors">
                         {{error.$message}}
+                    </div>
+                    <div class="mt-1 text-red-500 text-sm" v-if="formErrors?.end_date">
+                        {{formErrors?.end_date[0]}}
                     </div>
                 </div>
                 <div class="mb-4">

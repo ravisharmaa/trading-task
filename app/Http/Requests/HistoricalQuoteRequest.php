@@ -16,13 +16,9 @@ class HistoricalQuoteRequest extends FormRequest
     {
         return [
             'email' => 'required|email',
-            'company_symbol' => 'required',
+            'company_symbol' => 'required|exists:company_symbols,symbol',
             'start_date' => 'required|date_format:Y-m-d|before_or_equal:end_date|before_or_equal:today',
             'end_date' => 'required|date_format:Y-m-d|after_or_equal:start_date|before_or_equal:today'
         ];
-    }
-    public function getCarbonInstance(string $date): Carbon
-    {
-        return Carbon::createFromFormat('Y-m-d', $date);
     }
 }
