@@ -99,8 +99,8 @@ services:
 
   npm:
       build:
-          context: ./docker/node
-          dockerfile: node.dockerfile
+          context: ./
+          dockerfile: ./docker/node/node.dockerfile
           args:
               - UID=${UID:-1000}
               - GID=${GID:-1000}
