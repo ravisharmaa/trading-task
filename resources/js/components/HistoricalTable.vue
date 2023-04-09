@@ -1,6 +1,9 @@
 <script setup>
-import {ref} from "vue";
+import {ref, defineEmits} from "vue";
 import CandleBarChart from "./CandleBarChart.vue";
+const emit = defineEmits([
+    'on-view-another-clicked'
+])
 defineProps([
     'historicalData'
 ])
@@ -16,7 +19,7 @@ let viewInCharts = ref(false);
                         {{ viewInCharts ? 'View In Table' : 'View in Charts' }}
                     </button>
                     <!-- View Another Button with margin -->
-                    <button class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded focus:outline-none ml-4">
+                    <button class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded focus:outline-none ml-4" @click="emit('on-view-another-clicked')">
                         View Another
                     </button>
                 </div>

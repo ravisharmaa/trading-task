@@ -13,10 +13,10 @@ class CompanySymbolController extends Controller
     {
         $companySymbol = CompanySymbol::query()
             ->when(request()->filled('symbol'), function ($query) {
-                $wildCard = '%'. request('symbol') . '%';
-                $query->where('symbol','like', $wildCard);
+                $wildCard = '%'.request('symbol').'%';
+                $query->where('symbol', 'like', $wildCard);
             })
-            ->select('id','symbol')
+            ->select('id', 'symbol')
             ->get();
 
         return CompanySymbolResource::collection($companySymbol);

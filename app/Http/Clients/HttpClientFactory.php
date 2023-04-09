@@ -2,7 +2,6 @@
 
 namespace App\Http\Clients;
 
-
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Facades\Http;
 
@@ -11,8 +10,8 @@ readonly class HttpClientFactory
     public function makeClient(ClientType $clientType): PendingRequest
     {
         return match ($clientType) {
-          ClientType::COMPANY_SYMBOL => $this->makeCompanyClient(),
-          ClientType::HISTORICAL_DATA => $this->makeFinancialClient(),
+            ClientType::COMPANY_SYMBOL => $this->makeCompanyClient(),
+            ClientType::HISTORICAL_DATA => $this->makeFinancialClient(),
         };
     }
 
@@ -24,9 +23,11 @@ readonly class HttpClientFactory
     private function makeFinancialClient(): PendingRequest
     {
         return Http::baseUrl(env('FINANCE_RAPID_API'))
-                ->withHeaders([
+                ->withHeaders(
+                    [
                     'X-RapidAPI-Key' => env('FINANCE_RAPID_API_KEY'),
-                    'X-RapidAPI-HOST' => env('FINANCE_RAPID_API_HOST')
-                ]);
+                    'X-RapidAPI-HOST' => env('FINANCE_RAPID_API_HOST'),
+                    ]
+                );
     }
 }

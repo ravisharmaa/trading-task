@@ -1,11 +1,14 @@
 <script setup>
 import {reactive, ref, defineEmits} from "vue";
 import debounce from 'lodash.debounce'
-import ApRequest from "../api/api";
+import ApiRequest from "../api/api";
 import VueMultiselect from "vue-multiselect";
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
 import {formatDate} from "../utils/utilities";
+import useVuelidate from "@vuelidate/core";
+import {required, email} from "@vuelidate/validators";
+
 const emit = defineEmits(['on-data-received']);
 // properties
 let formObject = ref({
@@ -14,9 +17,17 @@ let formObject = ref({
     endDate: new Date(),
     email: ''
 })
+const validationRules = {
+    companyName: {required},
+    startDate: {required},
+    endDate: {required},
+    email: {required, email}
+}
+
+const v$ = useVuelidate(validationRules, formObject);
 let formErrors = ref([]);
 let symbolsSelectOptions = reactive([]);
-let apiRequest = new ApRequest();
+let apiRequest = new ApiRequest();
 let isSearchLoading = ref(false);
 const sendApiRequest = debounce(async (newName) => {
     try {
@@ -38,21 +49,24 @@ const sendApiRequest = debounce(async (newName) => {
 }, 1000)
 
 const submitForm = async () => {
-    let value = formObject.value;
-    const formData = {
-        'company_symbol' :value.companyName?.name,
-        'start_date': formatDate(value.startDate),
-        'end_date': formatDate(value.endDate),
-        'email': value.email
-    }
-    try {
-        let data = await apiRequest.getHistoricalData(formData)
-        if (data.status === 200 && data.data.length > 0) {
-            emit('on-data-received', data);
+    const result = await v$.value.$validate();
+    if (result) {
+        let value = formObject.value;
+        const formData = {
+            'company_symbol' :value.companyName?.name,
+            'start_date': formatDate(value.startDate),
+            'end_date': formatDate(value.endDate),
+            'email': value.email
         }
-    } catch (error) {
-        if (error.response.status === 422) {
-            formErrors.value = error.response?.data?.errors
+        try {
+            let data = await apiRequest.getHistoricalData(formData)
+            if (data.status === 200 && data.data.length > 0) {
+                emit('on-data-received', data);
+            }
+        } catch (error) {
+            if (error.response.status === 422) {
+                formErrors.value = error.response?.data?.errors
+            }
         }
     }
 }
@@ -81,6 +95,9 @@ const submitForm = async () => {
                             Oops! No elements found
                         </template>
                     </VueMultiselect>
+                    <div class="mt-1 text-red-500 text-sm" v-for="error in v$.companyName.$errors">
+                        {{error.$message}}
+                    </div>
                 </div>
                 <div class="mb-4">
                     <label class="block text-gray-700 text-sm font-bold mb-2" for="start_date">
@@ -93,21 +110,32 @@ const submitForm = async () => {
                         :clearable="false"
                         :month-change-on-scroll="false"
                         auto-apply no-swipe/>
+                    <div class="mt-1 text-red-500 text-sm" v-for="error in v$.startDate.$errors">
+                        {{error.$message}}
+                    </div>
                 </div>
                 <div class="mb-4">
                     <label class="block text-gray-700 text-sm font-bold mb-2" for="end_date">
                         End Date
                     </label>
                     <VueDatePicker v-model="formObject.endDate" :enable-time-picker="false" :format="formatDate" :clearable="false" auto-apply no-swipe />
+                    <div class="mt-1 text-red-500 text-sm" v-for="error in v$.endDate.$errors">
+                        {{error.$message}}
+                    </div>
                 </div>
                 <div class="mb-4">
                     <label class="block text-gray-700 text-sm font-bold mb-2" for="email">
                         Email
                     </label>
-                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="email"
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight
+                            focus:outline-none focus:shadow-outline"
+                           id="email"
                            v-model="formObject.email"
                            type="email"
                            placeholder="Email">
+                    <div class="mt-1 text-red-500 text-sm" v-for="error in v$.email.$errors">
+                        {{error.$message}}
+                    </div>
                 </div>
                 <div class="flex items-center justify-between">
                     <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">

@@ -15,7 +15,7 @@ const setHistoricalData = (data) => {
             <company-form @onDataReceived="setHistoricalData"></company-form>
         </div>
         <div v-else>
-            <historical-table :historical-data="historicalData"></historical-table>
+            <historical-table :historical-data="historicalData" @onViewAnotherClicked="showForm = true"></historical-table>
         </div>
     </div>
 </template>
