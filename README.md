@@ -11,9 +11,14 @@ The following dependencies are required to successfully run this project:
 
 ## Setup Instructions
 Assuming that docker & make is already available in the machine
-1. For make Run `make install`
-2. For docker run `docker compose up -d` or `docker-compose up -d`
-3. Additionally, a docker-compose.override.yml can also be used to smoothen the development environemnt
+1. Run `make env` or `cp .env.example .env`
+2. For make Run `make install`
+3. For docker run `docker compose up -d` or `docker-compose up -d`
+4. Run `make migrations`
+5. Run `make add-symbols` to add necessary company symbols.
+6. Additionally, a docker-compose.override.yml can also be used to smoothen the development environment
+7. It might take some time to make the up running in Mac and Windows as the composer install runs standalone.
+8. Please add your rapid api key in the `FINANCE_RAPID_API_KEY=""" ` var in the env before proceeding.
 ```yaml
 version: '3.4'
 

@@ -212,7 +212,7 @@ return [
         // 'ExampleClass' => App\Example\ExampleClass::class,
     ])->toArray(),
 
-    'finance_api_key' => env('FINANCE_RAPID_API_KEY', 'c854672bc9mshceb851cde658f9bp1af19ajsn16a35b24c85c'),
+    'finance_api_key' => env('FINANCE_RAPID_API_KEY', ''),
     'finance_api_host' => env('FINANCE_RAPID_API_HOST', 'yh-finance.p.rapidapi.com'),
     'company_symbols_base_url' => env('COMPANY_SYMBOLS_BASE_URL', 'https://pkgstore.datahub.io/'),
     'company_symbols_path_component' => env('COMPANY_SYMBOLS_PATH_COMPONENT', 'https://pkgstore.datahub.io/')
