@@ -13,7 +13,7 @@ class HttpClientService
     {
     }
 
-    public function getData(ClientType $clientType, string $url): array
+    public function getData(ClientType $clientType, string $url): ?array
     {
        $client = $this->clientFactory->makeClient($clientType);
        try {

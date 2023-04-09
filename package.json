@@ -14,9 +14,12 @@
     },
     "dependencies": {
         "@vitejs/plugin-vue": "^4.1.0",
+        "@vuepic/vue-datepicker": "^4.3.0",
+        "apexcharts": "^3.37.3",
         "lodash.debounce": "^4.0.8",
         "vue": "^3.2.36",
         "vue-loader": "^17.0.1",
-        "vue-multiselect": "^3.0.0-beta.1"
+        "vue-multiselect": "^3.0.0-beta.1",
+        "vue3-apexcharts": "^1.4.1"
     }
 }

@@ -6,6 +6,6 @@ export default class ApiRequest {
     }
 
     async getHistoricalData(formObject) {
-        return await axios.post('/historical-quote', formObject)
+        return await axios.post('/api/historical-quote', formObject)
     }
 }

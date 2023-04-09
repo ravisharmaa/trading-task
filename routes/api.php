@@ -6,5 +6,5 @@ use Illuminate\Support\Facades\Route;
 
 Route::apiResource('company-symbols', CompanySymbolController::class)
     ->only('index');
-Route::post('historical/quote', [ HistoricalQuoteController::class, 'show'])
+Route::post('historical-quote', [ HistoricalQuoteController::class, 'show'])
     ->name('historical.quote.show');
