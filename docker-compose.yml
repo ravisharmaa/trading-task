@@ -91,6 +91,9 @@ services:
       build:
           context: ./docker/php
           dockerfile: Dockerfile
+          args:
+              - UID=${UID:-1000}
+              - GID=${GID:-1000}
       restart: unless-stopped
       container_name: email-task
       depends_on:
