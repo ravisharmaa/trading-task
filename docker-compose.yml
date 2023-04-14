@@ -123,6 +123,25 @@ services:
       command: maildev --smtp 25
       ports:
           - "1080:1080"
+
+  rabbitmq:
+      image: rabbitmq:management-alpine
+      environment:
+          RABBITMQ_DEFAULT_USER: guest
+          RABBITMQ_DEFAULT_PASSWORD: guest
+      volumes:
+          - rabbitmqdata:/var/lib/rabbitmq
+      labels:
+          - "traefik.enable=true"
+          - "traefik.http.routers.queue.rule=Host(`queue.localhost`)"
+          - "traefik.http.routers.queue.entrypoints=web"
+          - "traefik.http.routers.queue.service=queue-service"
+          - "traefik.http.services.queue-service.loadbalancer.server.port=15672"
+          - "traefik.docker.network=trading-point-task_default"
+          - "traefik.port=80"
+
 volumes:
   db:
     driver: local
+  rabbitmqdata:
+      driver: local

@@ -21,12 +21,12 @@ COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr
 # Install required PHP extensions and all their prerequisites available via apt.
 RUN chmod uga+x /usr/bin/install-php-extensions \
     && sync \
-    && install-php-extensions pdo_mysql mysqli
+    && install-php-extensions pdo_mysql mysqli sockets
 
 RUN mkdir -p /var/www
 ADD ../.. .
 FROM dev as debug
-RUN install-php-extensions xdebug
+RUN install-php-extensions  @composer xdebug ## some extensions require composer to be inside the php. We are enabling this only for dev.
 USER laravel
 EXPOSE 9000
 CMD ["php-fpm"]
