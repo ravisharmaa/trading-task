@@ -2,7 +2,7 @@ FROM nginx:stable-alpine
 ARG FPM_HOST="127.0.0.1"
 RUN echo "$FPM_HOST"
 
-ADD ./docker/nginx/default.conf  /etc/nginx/conf.d/default.conf
+ADD default.conf  /etc/nginx/conf.d/default.conf
 RUN sed -i "s/fastcgi_pass_network_address/${FPM_HOST}/g" /etc/nginx/conf.d/default.conf
 
 ARG UID

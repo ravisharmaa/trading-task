@@ -37,8 +37,8 @@ services:
 
   webserver:
     build:
-        context: ./
-        dockerfile: ./docker/nginx/nginx.dockerfile
+        context: ./docker/nginx
+        dockerfile: nginx.dockerfile
         args:
             - UID=${UID:-1000}
             - GID=${GID:-1000}
@@ -100,6 +100,7 @@ services:
           - mysql
       volumes:
           - ./:/var/www
+      working_dir: /var/www
       command: /var/www/artisan queue:work --sleep=3 --tries=3 --timeout=300
 
   npm:
