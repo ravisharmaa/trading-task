@@ -213,8 +213,9 @@ return [
     ])->toArray(),
 
     'finance_api_key' => env('FINANCE_RAPID_API_KEY', ''),
+    'finance_api_url' => env('FINANCE_RAPID_API', 'https://yh-finance.p.rapidapi.com/stock/v3'),
     'finance_api_host' => env('FINANCE_RAPID_API_HOST', 'yh-finance.p.rapidapi.com'),
+    'finance_api_path_component' => env('FINANCE_API_PATH_COMPONENT', 'get-historical-data?symbol=%s"'),
     'company_symbols_base_url' => env('COMPANY_SYMBOLS_BASE_URL', 'https://pkgstore.datahub.io/'),
-    'company_symbols_path_component' => env('COMPANY_SYMBOLS_PATH_COMPONENT', 'https://pkgstore.datahub.io/')
-
+    'company_symbols_path_component' => env('COMPANY_SYMBOLS_PATH_COMPONENT', 'core/nasdaq-listings/nasdaq-listed_json/data/a5bc7580d6176d60ac0b2142ca8d7df6/nasdaq-listed_json.json')
 ];

@@ -44,7 +44,7 @@ class SendStatisticsEmail extends Mailable
             with: [
                 'start_date' => $this->mailMessageValueObject->getStartDate(),
                 'end_date' => $this->mailMessageValueObject->getEndDate(),
-//                'prices' => $this->mailMessageValueObject->getPrices()
+                'prices' => $this->mailMessageValueObject->format()
             ]
         );
     }
