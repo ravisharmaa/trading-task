@@ -34,7 +34,7 @@ export default {
         let formatted = [];
         this.chartData.forEach(data => {
             formatted.push({
-                x: new Date(data.date * 1000),
+                x: data.date,
                 y: [data.open, data.high, data.low, data.close]
             })
         })

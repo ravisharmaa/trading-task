@@ -7,3 +7,12 @@ export const formatDate = (selectedDate) => {
     const day = String(date.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
 }
+export const formatTimeStamp = (timestamp) => {
+    let date = new Date(timestamp * 1000);
+    return date.toLocaleDateString('en-gb',
+        {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        })
+}
