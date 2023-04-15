@@ -22,11 +22,11 @@ readonly class HttpClientFactory
 
     private function makeFinancialClient(): PendingRequest
     {
-        return Http::baseUrl(env('FINANCE_RAPID_API'))
+        return Http::baseUrl(config('app.finance_api_url'))
                 ->withHeaders(
                     [
-                    'X-RapidAPI-Key' => config('app.finance_api_key'),
-                    'X-RapidAPI-HOST' => config('app.finance_api_host'),
+                        'X-RapidAPI-Key' => config('app.finance_api_key'),
+                        'X-RapidAPI-HOST' => config('app.finance_api_host'),
                     ]
                 );
     }

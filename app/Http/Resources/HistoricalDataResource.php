@@ -13,8 +13,8 @@ class HistoricalDataResource extends JsonResource
     {
         return collect($this->resource)->filter(
             function ($looped) use ($request) {
-                $startDate = Carbon::createFromFormat('Y-m-d', $request->get('start_date'))->timestamp;
-                $endDate = Carbon::createFromFormat('Y-m-d', $request->get('end_date'))->timestamp;
+                $startDate = Carbon::parse($request->get('start_date'))->timestamp;
+                $endDate = Carbon::parse($request->get('end_date'))->timestamp;
                 $parsed = Carbon::createFromTimestamp($looped['date'])->timestamp;
                 return $parsed >= $startDate && $parsed <= $endDate;
             }

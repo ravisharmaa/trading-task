@@ -18,9 +18,9 @@ class HistoricalQuoteController extends Controller
         HistoricalQuoteRequest $request,
         HttpClientService $clientService
     ): HistoricalDataResource {
-        $fianceApiUrl = sprintf(env('FINANCE_API_PATH_COMPONENT'), $request->get('company_symbol'));
+        $financeApiUrl = sprintf(config('app.finance_api_path_component'), $request->get('company_symbol'));
         try {
-            $data = $clientService->getData(ClientType::HISTORICAL_DATA, $fianceApiUrl);
+            $data = $clientService->getData(ClientType::HISTORICAL_DATA, $financeApiUrl);
         } catch (InvalidHttpRequest) {
             return new HistoricalDataResource([]);
         }
@@ -30,6 +30,7 @@ class HistoricalQuoteController extends Controller
                 $request->get('start_date'),
                 $request->get('end_date'),
                 $request->get('email'),
+                $data['prices']
             )
         );
 
