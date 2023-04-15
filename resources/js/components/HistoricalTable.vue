@@ -1,13 +1,25 @@
 <script setup>
-import {ref, defineEmits} from "vue";
+import {ref, defineEmits, computed, reactive} from "vue";
 import CandleBarChart from "./CandleBarChart.vue";
+import {formatDate, formatTimeStamp} from "../utils/utilities";
 const emit = defineEmits([
     'on-view-another-clicked'
 ])
-defineProps([
+const props = defineProps([
     'historicalData'
 ])
 let viewInCharts = ref(false);
+let localData = ref(props.historicalData);
+const formattedData = computed(() => {
+   return localData.value.map(data => {
+       data.date = formatTimeStamp(data.date)
+       data.open = Math.round(data.open)
+       data.high = Math.round(data.high)
+       data.close = Math.round(data.close)
+       data.low = Math.round(data.low)
+       return data
+   })
+})
 </script>
 <template>
     <div>
@@ -49,10 +61,10 @@ let viewInCharts = ref(false);
                         </thead>
                         <tbody>
                         <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
-                            v-for="data in historicalData">
+                            v-for="data in formattedData">
                             <th scope="row"
                                 class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                {{ new Date(data.date * 1000) }}
+                                {{ data.date}}
                             </th>
                             <td class="px-6 py-4">
                                 {{ data.open }}
